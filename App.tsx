@@ -11,6 +11,7 @@ import {
   SafeAreaProvider,
   useSafeAreaInsets,
 } from 'react-native-safe-area-context';
+import { SdkWebView } from './components/SdkWebView';
 
 function App() {
   const isDarkMode = useColorScheme() === 'dark';
@@ -24,14 +25,11 @@ function App() {
 }
 
 function AppContent() {
-  const safeAreaInsets = useSafeAreaInsets();
+
 
   return (
     <View style={styles.container}>
-      <NewAppScreen
-        templateFileName="App.tsx"
-        safeAreaInsets={safeAreaInsets}
-      />
+      <SdkWebView/>
     </View>
   );
 }

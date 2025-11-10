@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EKYC</title>
+  <script>
+    (function (document, script) {
+      let sdk = document.createElement(script);
+      sdk.type = 'text/javascript';
+      sdk.async = true;
+      sdk.src = './sdk/faceme-web-sdk.js';
+      let firstscript = document.getElementsByTagName(script)[0];
+      firstscript.parentNode.insertBefore(sdk, firstscript);
+    })(document, 'script');
+    window.facemeAsyncInit = () => {
+      FaceMe.init(
+        () => console.log('init success'),
+        err => console.log(err),
+      );
+    };
+  </script>
+</head>
+
+<body>
+
+
+  <div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+    <h1>Web SDK Demo on React-Native</h1>
+    <div style="width: 100%; height: 100%" class="liveness" id="liveness"></div>
+  </div>
+  <script>
+    setTimeout(() => {
+      FaceMe.startAntiSpoofing(
+        {
+          sdkBlockId: 'liveness',
+          frontSetting: {},
+          rightSetting: {},
+          enableStrictMode: false,
+          fontStyle: {},
+          debug: false,
+        },
+        {
+          antiSpoofingType: 'TWO_STAGES_WITH_RANDOM_ACTIONS',
+          precisionLevel: 'fast',
+          raNum: 2,
+          raNodEnable: false,
+        },
+        (detail, spoofingcheckImages, clearImage) => {
+          let form = new FormData();
+          console.log(detail);
+          console.log(spoofingcheckImages);
+          console.log(clearImage);
+          form.append('detail', JSON.stringify(detail));
+          for (const s in spoofingcheckImages) {
+            spoofingcheckImages[s].forEach(element => {
+              form.append(`${s}`, element);
+            });
+          }
+          form.append('clearImage', clearImage[0]);
+          //API for Liveness
+          Spin.style.display = 'block';
+          fetch(url + '/liveness', {
+            method: 'POST',
+            body: form,
+          })
+            .then(res => {
+              return res.json();
+            })
+            .then(data => {
+              //backBtn.style.display = "none";
+              //nextBtn.style.display = "none";
+              console.log(data);
+              if (data.similarity !== undefined) {
+                if (data.similarity >= 0.75) {
+                  msg = 'Result : Mathing Pass Same Person';
+                  showResult(msg);
+                } else {
+                  msg = 'Result : Matching Fail Different Person';
+                  showResult(msg);
+                }
+              } else if (data.livenessScore !== undefined) {
+                msg = 'Liveness score is too low.';
+                showResult(msg);
+              } else {
+                msg = `Error : ${data.errorMessage}`;
+                showResult(msg);
+              }
+            })
+            .catch(err => {
+              console.log(err);
+            });
+        },
+        err => console.log(err),
+      );
+    }, 1000);
+  </script>
+</body>
+
+</html>
+
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test</title>
+</head>
+<body>
+  <div style="width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+    <h1>This is Test WebView</h1>
+  </div>
+</body>
+</html> -->
