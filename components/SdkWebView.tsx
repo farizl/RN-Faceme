@@ -17,18 +17,18 @@ export const SdkWebView = () => {
                         : `${RNFS.DocumentDirectoryPath}/www`; // For Android
 
                 // Ensure the directory exists
-                const exists = await RNFS.exists(webRoot);
-                console.log(webRoot)
-                if (!exists) {
-                    console.error("❌ Directory not found:", webRoot);
-                    return;
-                }
+                // const exists = await RNFS.exists(webRoot);
+                // console.log(webRoot)
+                // if (!exists) {
+                //     console.error("❌ Directory not found:", webRoot);
+                //     return;
+                // }
 
                 // 2️⃣ Copy index.html from assets to the internal path
                 // const assetPath = 'www/index.html'; // relative to android/app/src/main/assets
                 // const destPath = `${webRoot}/index.html`;
                 // await RNFS.copyFileAssets(assetPath, destPath);
-                //await copyFolderFromAssets("www",webRoot)
+                // await copyFolderFromAssets("www",webRoot)
 
                 // Copy according to platform
                 if (Platform.OS === "android") {
